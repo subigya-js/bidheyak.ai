@@ -68,7 +68,7 @@ bidheyak-ai/
 Copy the template and fill in real values. Never commit the real `.env` files.
 
 ```bash
-cp .env.example
+cp .env.example .env
 ```
 
 ### 2. Ingestion (Python)
