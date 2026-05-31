@@ -47,7 +47,7 @@ User question
 ```
 bidheyak-ai/
 ├── ingestion/        # offline Python pipeline (scrape → extract → embed → store)
-├── app/              # live Next.js chat application
+├── web/              # live Next.js chat application
 ├── eval/             # (Phase 4) retrieval & model evaluation
 ├── .env.example      # template for required environment variables
 └── README.md
@@ -67,7 +67,7 @@ bidheyak-ai/
 Copy the template and fill in real values. Never commit the real `.env` files.
 
 ```bash
-cp .env.example .env
+cp .env.example
 ```
 
 ### 2. Ingestion (Python)
@@ -87,8 +87,14 @@ or modified bills are reprocessed.
 ### 3. App (Next.js)
 
 ```bash
-cd app
+cd web
+```
+
+```bash
 npm install
+```
+
+```bash
 npm run dev
 ```
 
