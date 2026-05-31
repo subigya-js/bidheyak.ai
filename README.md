@@ -1,10 +1,11 @@
 # Bidheyak.ai
 
-An AI chat application that answers questions about bills from the
+An **agentic AI chatbot** for querying and analyzing bills from the
 [House of Representatives of Nepal](https://hr.parliament.gov.np/en).
 Bill documents are published as Nepali-language PDFs; Bidheyak.ai ingests
-them, makes them searchable, and answers questions in Nepali or English
-using Retrieval-Augmented Generation (RAG).
+them, makes them searchable, and answers questions in Nepali or English —
+retrieving the relevant legislation and reasoning across multiple bills to
+respond, rather than answering from a single lookup.
 
 > **Bidheyak** (विधेयक) is the Nepali word for *bill* (proposed legislation).
 
