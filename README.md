@@ -18,7 +18,7 @@ never import each other's code.
    bills, extracts Nepali text from the PDFs (handling legacy Preeti fonts
    and scanned documents via OCR), splits the text into chunks, embeds them
    into vectors, and stores them in the database.
-2. **App** (`app/`) — the live Next.js chat app. When a user asks a question,
+2. **Web** (`web/`) — the live Next.js chat app. When a user asks a question,
    it embeds the question, retrieves the most relevant chunks from the
    database, and asks an LLM to answer using that retrieved context.
 
@@ -34,14 +34,14 @@ User question
 | Concern            | Choice                                  | Notes                                      |
 | ------------------ | --------------------------------------- | ------------------------------------------ |
 | Scraping           | Python (Playwright / requests)          | Handles paginated bill listings            |
-| PDF text           | PyMuPDF                                  | For PDFs with a real text layer            |
+| PDF text           | PyMuPDF                                 | For PDFs with a real text layer            |
 | OCR (scanned PDFs) | EasyOCR (Google Cloud Vision fallback)  | Devanagari script support                  |
 | Legacy fonts       | Preeti → Unicode conversion             | Many gov PDFs are not real Unicode         |
 | Embeddings         | BGE-M3 (self-hosted)                    | Multilingual, cross-lingual retrieval      |
 | Reranker (Phase 2) | BGE reranker (self-hosted)              | Improves retrieval precision               |
 | Vector database    | Postgres + pgvector (Supabase / Neon)   | Vectors plus metadata filtering            |
-| App framework      | Next.js + Vercel AI SDK                 | Streaming chat UI and tool calls           |
-| LLM                | via OpenRouter                          | Swap models with a config change           |
+| Web App framework  | Next.js + Vercel AI SDK                 | Streaming chat UI and tool calls           |
+| LLM                | OpenAI (via OpenRouter later)           | Swap models with a config change           |
 
 ## Repository structure
 
@@ -85,7 +85,7 @@ This scrapes the bills, processes the PDFs, and writes vectors to the
 database. Re-running it is safe — unchanged bills are skipped, and only new
 or modified bills are reprocessed.
 
-### 3. App (Next.js)
+### 3. Web (Next.js)
 
 ```bash
 cd web
@@ -105,9 +105,9 @@ The app reads from the same database the ingestion pipeline writes to.
 
 | Variable             | Used by         | Description                                |
 | -------------------- | --------------- | ------------------------------------------ |
-| `DATABASE_URL`       | ingestion + app | Hosted Postgres connection string          |
-| `OPENROUTER_API_KEY` | app             | LLM access via OpenRouter                  |
-| `EMBEDDING_URL`      | app             | Endpoint that embeds the user's question   |
+| `DATABASE_URL`       | ingestion + web | Hosted Postgres connection string          |
+| `OPENROUTER_API_KEY` | web             | LLM access via OpenRouter                  |
+| `EMBEDDING_URL`      | web             | Endpoint that embeds the user's question   |
 
 > **Important:** the question and the documents must be embedded with the
 > **same** model, or retrieval breaks. In development this runs locally on
@@ -116,7 +116,7 @@ The app reads from the same database the ingestion pipeline writes to.
 
 ## Deployment
 
-- **App** → Vercel
+- **Web** → Vercel
 - **Database** → Supabase or Neon (free tier is sufficient at this scale)
 - **Ingestion** → runs on your machine, or on a scheduled job (e.g. a cron
   GitHub Action) that pushes fresh data to the hosted database
