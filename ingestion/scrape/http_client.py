@@ -18,6 +18,7 @@ except ImportError:
 
 import config
 
+
 class FetchError(RuntimeError):
     """Raised when a URL cannot be retrieved after all retries."""
 
@@ -50,3 +51,27 @@ def fetch(session: requests.Session, url: str) -> str:
             time.sleep(config.REQUEST_DELAY_SECONDS)
     raise FetchError(
         f"Failed to fetch {url} after {config.MAX_RETRIES} tries: {last_error!r}")
+
+
+def fetch_bytes(session: requests.Session, url: str) -> bytes:
+    """Like fetch(), but returns raw bytes — for binary files (PDFs).
+
+    Same retries, backoff, and politeness delay as fetch().
+    """
+    last_error: Exception | None = None
+    for attempt in range(1, config.MAX_RETRIES + 1):
+        try:
+            response = session.get(url, timeout=config.REQUEST_TIMEOUT_SECONDS)
+            if response.status_code >= 500:
+                raise FetchError(
+                    f"Server error {response.status_code} for {url}")
+            response.raise_for_status()
+            return response.content
+        except (requests.RequestException, FetchError) as error:
+            last_error = error
+            if attempt < config.MAX_RETRIES:
+                time.sleep(config.RETRY_BACKOFF_SECONDS * attempt)
+        finally:
+            time.sleep(config.REQUEST_DELAY_SECONDS)
+    raise FetchError(
+        f"Failed to fetch bytes {url} after {config.MAX_RETRIES} tries: {last_error!r}")
