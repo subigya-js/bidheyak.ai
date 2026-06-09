@@ -22,7 +22,7 @@ def main() -> None:
 
     print(f"\nDiscovered {len(bills)} registered bills:\n")
     for bill in bills:
-        print(f"  [{bill.reg_number}] {bill.title}")
+        print(f"  [{bill.reg_number}] {bill.title} · {bill.bill_id}")
         print(f"        {bill.ministry} · {bill.registration_date}")
 
     print(f"\nTotal: {len(bills)} bills")
