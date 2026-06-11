@@ -1,6 +1,5 @@
 requests
 beautifulsoup4
 truststore
-pymupdf
 npttf2utf
-easyocr
+modal
